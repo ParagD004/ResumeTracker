@@ -1,3 +1,4 @@
+"use client"
 import {
     SignInButton,
     SignOutButton,
@@ -33,8 +34,12 @@ export const Navigation = () => {
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
+                <button className="px-2 py-1 text-sm border rounded-lg border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
                 <Link href="/user-profile">Profile</Link>
-                <SignOutButton />
+                </button>
+                <div className="px-2 py-1 text-sm border rounded-lg border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
+                  <SignOutButton />
+                </div>
                 {/* <UserButton /> */}
               </SignedIn>
             </div>

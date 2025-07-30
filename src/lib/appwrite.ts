@@ -1,12 +1,17 @@
 import { Client, Databases, Storage, ID } from 'appwrite';
 
-// Initialize Appwrite client
 const client = new Client()
-  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')
-  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '');
+  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!);
 
-// Initialize services
-const databases = new Databases(client);
-const storage = new Storage(client);
+// For server-side operations
+const serverClient = new Client()
+  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
+  .setKey(process.env.APPWRITE_API_KEY!);
 
-export { client, databases, storage, ID };
+export const databases = new Databases(client);
+export const serverDatabases = new Databases(serverClient);
+export const storage = new Storage(client);
+export const serverStorage = new Storage(serverClient);
+export { ID };

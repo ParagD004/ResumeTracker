@@ -17,7 +17,7 @@ export async function GET(
     // Convert string ID to MongoDB ObjectId
     const objectId = new ObjectId(params.jobId);
     
-    const job = await db.collection('jobPostings').findOne({ _id: objectId });
+    const job = await db.collection('JobPostings').findOne({ _id: objectId });
 
     client.close();
 

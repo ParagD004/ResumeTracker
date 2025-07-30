@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="space-y-4">
           <h3 className="text-xl font-semibold text-white">Contact Us</h3>
           <div className="space-y-2">
-            <a href="paragdharmik004@gmail.com" className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
+            <a href="mailto:paragdharmik004@gmail.com" className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
               <FaEnvelope className="text-blue-400" />
               paragdharmik004@gmail.com
             </a>
@@ -33,7 +33,10 @@ export default function Footer() {
             >
               <FaInstagram className="text-white text-xl" />
             </a>
+            <a href="https://instagram.com/parag_dharmik_004" target="_blank" 
+              rel="noopener noreferrer">
             <span className="text-gray-300">@parag_dharmik_004</span>
+            </a>
           </div>
         </div>
 

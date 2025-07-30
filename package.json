@@ -10,7 +10,10 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.19.4",
-    "appwrite": "^18.1.1",
+    "@types/mongoose": "^5.11.96",
+    "appwrite": "^18.2.0",
+    "axios": "^1.10.0",
+    "mongoose": "^8.17.0",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -20,7 +23,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/mongodb": "^4.0.6",
-    "@types/node": "^20",
+    "@types/node": "^20.19.9",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",

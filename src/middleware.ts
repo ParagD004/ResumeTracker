@@ -20,6 +20,9 @@ export default clerkMiddleware(async (auth, req) => {
         //Add custom logic to run before redirecting
         return redirectToSignIn();
     }
+  //   if (userId && req.nextUrl.pathname === '/sign-in') {
+  //   return NextResponse.redirect(new URL('/', req.url));
+  // }
     // if(!isPublicRoute(req))  await auth.protect();
 });
 

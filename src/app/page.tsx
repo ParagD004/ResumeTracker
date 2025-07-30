@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Background Image with Overlay */}
-      <div 
+      {/* <div 
         className="fixed inset-0 z-0 bg-gray-900"
         style={{
           backgroundImage: `url(/resume.png)`,
@@ -16,7 +16,7 @@ export default function Home() {
           backgroundRepeat: 'no-repeat',
           opacity: 0.3 // Adjust opacity as needed
         }}
-      />
+      /> */}
       
       {/* Content Container */}
       <div className="relative z-10 flex flex-col min-h-screen">
