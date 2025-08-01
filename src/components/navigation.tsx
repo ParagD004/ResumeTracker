@@ -21,6 +21,9 @@ export const Navigation = () => {
               </h1>
             </div>
             <div className="flex items-center gap-4">
+              <button className="px-2 py-1 rounded-lg text-sm border border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
+                <Link href="/about">About Us</Link>
+              </button>
               <SignedOut>
                 <SignInButton>
                   <button className="px-2 py-1 rounded-lg text-sm border border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">

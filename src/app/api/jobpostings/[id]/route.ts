@@ -18,7 +18,8 @@ export async function GET(
     }
     
     // Convert MongoDB ObjectId to string
-    job._id = job._id.toString();
+    (job as { _id: any })._id = (job as { _id: any })._id.toString();
+
     
     return NextResponse.json({ success: true, data: job });
   } catch (error) {

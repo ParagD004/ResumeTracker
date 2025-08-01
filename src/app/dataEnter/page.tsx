@@ -42,7 +42,12 @@ export default function DataEnterPage() {
         throw new Error('Failed to submit job posting');
       }
 
-      router.push('/submitresume');
+      // Get jobId from response
+      const result = await response.json();
+      const jobId = result.data?._id || result.jobId; // adjust based on your API response
+
+      // router.push('/submitresume');
+      router.push(`/submitresume?jobId=${jobId}`);
     } catch (error) {
       console.error('Error submitting job posting:', error);
     } finally {
