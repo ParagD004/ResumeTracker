@@ -1,25 +1,148 @@
+// import { NextResponse } from 'next/server';
+// import { serverStorage } from '@/lib/appwrite';
+// import { ID } from 'appwrite';
+// import JobPosting from '@/models/JobPosting'; // Import your Mongoose model
+// import  dbConnect  from '@/lib/mongoose'; // Make sure you have this utility
+
+// export async function POST(request: Request) {
+//   await dbConnect(); // Ensure database connection
+
+//   try {
+//     const formData = await request.formData();
+//     const files = formData.getAll('resumes') as File[];
+//     const jobId = formData.get('jobId') as string;
+
+//     if (!jobId) {
+//       return NextResponse.json(
+//         { success: false, error: 'Job ID is required' },
+//         { status: 400 }
+//       );
+//     }
+
+//     // Upload files to Appwrite and prepare resume metadata
+//     const uploadPromises = files.map(async (file) => {
+//       const uploadedFile = await serverStorage.createFile(
+//         process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID!,
+//         ID.unique(),
+//         file
+//       );
+
+//       return {
+//         fileId: uploadedFile.$id,
+//         filename: file.name,
+//         uploadedAt: new Date()
+//       };
+//     });
+
+//     const resumesData = await Promise.all(uploadPromises);
+
+//     // Update MongoDB with the resume metadata
+//     const updatedJob = await JobPosting.findByIdAndUpdate(
+//       jobId,
+//       {
+//         $push: {
+//           resumes: { $each: resumesData }
+//         }
+//       },
+//       { new: true }
+//     );
+
+//     if (!updatedJob) {
+//       return NextResponse.json(
+//         { success: false, error: 'Job posting not found' },
+//         { status: 404 }
+//       );
+//     }
+
+//     return NextResponse.json({ 
+//       success: true, 
+//       data: {
+//         fileIds: resumesData.map(r => r.fileId),
+//         jobId: updatedJob._id
+//       }
+//     });
+//   } catch (error) {
+//     console.error('Error uploading resumes:', error);
+//     return NextResponse.json(
+//       { success: false, error: 'Failed to upload resumes' },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+
+
+
+
 import { NextResponse } from 'next/server';
 import { serverStorage } from '@/lib/appwrite';
 import { ID } from 'appwrite';
+import  JobPosting  from '@/models/JobPosting';
+import dbConnect from '@/lib/mongoose';
 
 export async function POST(request: Request) {
+  await dbConnect();
   try {
     const formData = await request.formData();
     const files = formData.getAll('resumes') as File[];
     
-    const uploadPromises = files.map(file => 
-      serverStorage.createFile(
+    // const uploadPromises = files.map(file => 
+    //   serverStorage.createFile(
+    const jobId = formData.get('jobId') as string;
+
+    if (!jobId) {
+      return NextResponse.json(
+        { success: false, error: 'Job ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Upload files to Appwrite and prepare resume metadata
+    const uploadPromises = files.map(async (file) => {
+      const uploadedFile = await serverStorage.createFile(
         process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID!,
         ID.unique(),
         file
-      )
+    //   )
+    // );
+      );
+
+      return {
+        fileId: uploadedFile.$id,
+        filename: file.name,
+        uploadedAt: new Date()
+      };
+    });
+
+    // const results = await Promise.all(uploadPromises);
+    const resumesData = await Promise.all(uploadPromises);
+
+    // Update MongoDB with the resume metadata
+    const updatedJob = await JobPosting.findByIdAndUpdate(
+      jobId,
+      {
+        $push: {
+          resumes: { $each: resumesData }
+        }
+      },
+      { new: true }
     );
 
-    const results = await Promise.all(uploadPromises);
+    if (!updatedJob) {
+      return NextResponse.json(
+        { success: false, error: 'Job posting not found' },
+        { status: 404 }
+      );
+    }
     
     return NextResponse.json({ 
       success: true, 
-      data: results.map(r => r.$id) 
+      // data: results.map(r => r.$id)
+      data: {
+        fileIds: resumesData.map(r => r.fileId),
+        jobId: updatedJob._id,
+        numberOfFiles: resumesData.length
+      } 
     });
   } catch (error) {
     console.error('Error uploading resumes:', error);
@@ -30,200 +153,3 @@ export async function POST(request: Request) {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import connectionToDatabase from "@/lib/mongoose";
-// import JobPosting from "@/models/JobPosting";
-// import { NextResponse } from "next/server";
-// import mongoose from "mongoose";
-
-// export async function POST(request: Request) {
-//   try {
-//     await connectionToDatabase();
-//     const connection = mongoose.connection;
-//   console.log("Connection state:", connection.readyState);
-//     const { position, department, location, experience, openings, 
-//             requiredSkills, description, salary } = await request.json();
-    
-//     // Convert array back to string for storage if needed
-//     const skillsString = Array.isArray(requiredSkills) 
-//       ? requiredSkills.join(', ') 
-//       : requiredSkills;
-
-//     const newJob = new JobPosting({
-//       position,
-//       department,
-//       location,
-//       experience,
-//       openings: Number(openings),
-//       skills: skillsString,
-//       description,
-//       salary
-//     });
-
-//     await newJob.save();
-    
-//     return NextResponse.json(
-//       { 
-//         jobId: newJob._id.toString(),
-//         message: "Job created successfully" 
-//       }, 
-//       { status: 201 }
-//     );
-    
-//   } catch (err: unknown) {
-//     console.error('Error details:', err);
-//     const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-//     return NextResponse.json(
-//       { error: "Internal server error" },
-//       { status: 500 }
-//     );
-//   }
-//}
-
-
-
-
-
-// import connectionToDatabase from "@/lib/mongoose";
-// import User from "@/models/User";
-// import { NextResponse } from "next/server";
-
-// export async function POST(request: Request) {
-//   try {
-//     await connectionToDatabase();
-    
-//     const { position, department, location, experience, openings, skills, description, salary } = await request.json();
-    
-//     const newUser = new User({
-//       position,
-//       department,
-//       location,
-//       experience,
-//       openings,
-//       skills,
-//       description,
-//       salary
-//     });
-
-//     await newUser.save();
-    
-//     return NextResponse.json(newUser, { status: 201 });
-    
-//   } catch (err: unknown) {
-//     console.error('Error details:', err);
-    
-//     if (err instanceof Error) {
-//       console.error('Error message:', err.message);
-//       console.error('Stack trace:', err.stack);
-//     }
-    
-//     return NextResponse.json(
-//       { error: "Internal server error" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-// import connectionToDatabase from "@/lib/mongoose";
-// import User from "../../../../models/User";
-// import { NextResponse } from "next/server";
-
-// export async function POST(request: Request) {
-//   try{
-//     await connectionToDatabase();
-//     const {position, department, location, experience, openings, skills, description, salary} = await request.json()
-//     const newUser = new User({position, department, location, experience, openings, skills, description, salary})
-//     await newUser.save()
-//     return NextResponse.json(newUser, 
-//       {
-//         status: 201
-//       }
-//     )
-//   } catch(err){
-//     console.log('Error details:',err);
-//     if (err instanceof Error) {
-//     console.error('Error message:', err.message);
-//     console.error('Stack trace:', err.stack);
-//   }
-// }
-// }
-
-
-
-
-
-
-
-// // app/api/resumes/route.ts
-// import { MongoClient, ObjectId } from 'mongodb';
-// import { NextResponse } from 'next/server';
-
-// export async function POST(request: Request) {
-//   try {
-//     if (!process.env.MONGODB_URI) {
-//       throw new Error('MONGODB_URI environment variable is not set');
-//     }
-
-//     const { jobId, resumeFileId, filename } = await request.json();
-    
-//     const client = await MongoClient.connect(process.env.MONGODB_URI);
-//     const db = client.db();
-    
-//     // Update the job posting with resume reference
-//     const result = await db.collection('jobPostings').updateOne(
-//       { _id: new ObjectId(jobId) },
-//       { 
-//          $push: { 
-//           resumes: {
-//             fileId: resumeFileId,
-//             filename,
-//             uploadedAt: new Date()
-//           }
-//         } 
-//       }
-//     );
-
-//     client.close();
-
-//     if (result.modifiedCount === 0) {
-//       return NextResponse.json(
-//         { message: 'Job not found or not updated' },
-//         { status: 404 }
-//       );
-//     }
-
-//     return NextResponse.json(
-//       { message: 'Resume association saved' },
-//       { status: 200 }
-//     );
-
-//   } catch (error) {
-//     console.error('Error storing resume reference:', error);
-//     return NextResponse.json(
-//       { message: 'Internal server error', error: error instanceof Error ? error.message : 'Unknown error' },
-//       { status: 500 }
-//     );
-//   }
-// }

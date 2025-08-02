@@ -9,7 +9,15 @@ const JobPostingSchema = new Schema({
   skills: { type: String, required: true },
   description: { type: String, required: true },
   salary: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  //Adding later
+  resumes: [
+    {
+      fileId: { type: String, required: true },
+      filename: { type: String, required: true },
+      uploadedAt: { type: Date, default: Date.now }
+    }
+  ]
 });
 
 const JobPosting = models.JobPosting || model('JobPosting', JobPostingSchema);

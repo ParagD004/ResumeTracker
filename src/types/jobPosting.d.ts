@@ -1,3 +1,9 @@
+export interface ResumeMeta {
+  fileId: string;
+  filename: string;
+  uploadedAt: Date;
+}
+
 export interface JobPostingData {
   position: string;
   department: string;
@@ -7,4 +13,5 @@ export interface JobPostingData {
   skills: string;
   description: string;
   salary: string;
+  resumes?: ResumeMeta[];
 }
