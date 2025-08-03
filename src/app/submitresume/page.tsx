@@ -214,7 +214,27 @@ export default function SubmitResumePage() {
 
         {resumes.length > 0 && uploadComplete && (
           <button
-            onClick={() => router.push(`/analyze/${jobId}`)}
+            onClick={async () => {
+              if (!jobId) return;
+              try {
+                // Call analyze-resumes API
+                const response = await fetch('/api/analyze-resumes', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ jobId })
+                });
+                const result = await response.json();
+                if (!result.success) {
+                  alert(result.error || 'Analysis failed');
+                  return;
+                }
+                // Store result in sessionStorage and redirect
+                sessionStorage.setItem('resumeRanking', JSON.stringify(result.data));
+                router.push(`/result?jobId=${jobId}`);
+              } catch (error) {
+                alert('Failed to analyze resumes');
+              }
+            }}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ml-auto"
           >
             Analyze Resumes
