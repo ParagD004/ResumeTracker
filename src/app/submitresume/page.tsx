@@ -60,58 +60,6 @@ export default function SubmitResumePage() {
     setResumes((prev) => prev.filter((_, i) => i !== index));
     setUploadProgress((prev) => prev.filter((_, i) => i !== index));
   };
-//   const handleSubmit = async () => {
-//   if (resumes.length === 0) return;
-//   setIsSubmitting(true);
-
-//   try {
-//     // First upload to Appwrite with progress tracking
-//     const uploadPromises = resumes.map(async (file, index) => {
-//       const uploadedFile = await storage.createFile(
-//         process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID!,
-//         ID.unique(),
-//         file,
-//         undefined,
-//         (progress) => {
-//           setUploadProgress((prev) => {
-//             const newProgress = [...prev];
-//             newProgress[index] = progress.progress;
-//             return newProgress;
-//           });
-//         }
-//       );
-//       return { fileId: uploadedFile.$id, filename: file.name };
-//     });
-
-//     const uploadedFiles = await Promise.all(uploadPromises);
-
-//     // Then send metadata to your API to store in MongoDB
-//     const response = await fetch('/api/resume', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         jobId,
-//         resumes: uploadedFiles,
-//       }),
-//     });
-
-//     const result = await response.json();
-    
-//     if (!response.ok) {
-//       throw new Error(result.error || 'Failed to store resume metadata');
-//     }
-
-//     alert("Resumes uploaded and metadata stored successfully!");
-//     setUploadComplete(true);
-//   } catch (error) {
-//     console.error("Error uploading resumes:", error);
-//     alert("Failed to upload resumes");
-//   } finally {
-//     setIsSubmitting(false);
-//   }
-// };
 
 
 
@@ -120,8 +68,8 @@ export default function SubmitResumePage() {
     setIsSubmitting(true);
 
     try {
+      // Upload files to Appwrite and collect metadata
       const uploadPromises = resumes.map(async (file, index) => {
-        // Use only ID.unique() for fileId
         const uploadedFile = await storage.createFile(
           process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID!,
           ID.unique(),
@@ -135,16 +83,39 @@ export default function SubmitResumePage() {
             });
           }
         );
-        // TODO: Store mapping { fileId: uploadedFile.$id, jobId, filename: file.name } in your database
-        return uploadedFile;
+        return {
+          fileId: uploadedFile.$id,
+          filename: file.name,
+          file // keep the file for FormData
+        };
       });
 
-      await Promise.all(uploadPromises);
-      alert("Resumes uploaded successfully!");
+      const uploadedFilesMeta = await Promise.all(uploadPromises);
+
+      // Prepare FormData for API
+      const formData = new FormData();
+      uploadedFilesMeta.forEach((meta) => {
+        formData.append('resumes', meta.file, meta.filename);
+      });
+      if (jobId) {
+        formData.append('jobId', jobId);
+      }
+
+      // Send metadata to /api/resumes
+      const response = await fetch('/api/resumes', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to store resume metadata');
+      }
+
+      alert('Resumes uploaded and metadata stored successfully!');
       setUploadComplete(true);
     } catch (error) {
-      console.error("Error uploading resumes:", error);
-      alert("Failed to upload resumes");
+      console.error('Error uploading resumes:', error);
+      alert('Failed to upload resumes');
     } finally {
       setIsSubmitting(false);
     }
