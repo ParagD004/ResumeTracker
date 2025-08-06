@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import {
     SignInButton,
     SignOutButton,
@@ -17,30 +17,30 @@ export const Navigation = () => {
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0">
               <h1 className="text-xl font-semibold text-[var(--foreground)]">
-                Resume Tracker
+                ResumeTracker
               </h1>
             </div>
             <div className="flex items-center gap-4">
-              <button className="px-2 py-1 rounded-lg text-sm border border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
                 <Link href="/about">About Us</Link>
               </button>
               <SignedOut>
                 <SignInButton>
-                  <button className="px-2 py-1 rounded-lg text-sm border border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
                     Sign In
                   </button>
                 </SignInButton>
                 <SignUpButton>
-                  <button className="px-2 py-1 text-sm border rounded-lg border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
                     Sign Up
                   </button>
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
-                <button className="px-2 py-1 text-sm border rounded-lg border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
                 <Link href="/user-profile">Profile</Link>
                 </button>
-                <div className="px-2 py-1 text-sm border rounded-lg border-neutral-300 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700">
+                <div className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-red-500/30 flex items-center gap-2">
                   <SignOutButton />
                 </div>
                 {/* <UserButton /> */}

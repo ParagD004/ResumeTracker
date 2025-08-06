@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   }));
 
   // Prepare prompt for OpenAI
-  const prompt = `You are a resume evaluator. Given the job details and a list of resumes (PDFs in base64), rank the resumes based on their suitability for the job.\nJob Details:\nPosition: ${job.position}\nDepartment: ${job.department}\nExperience: ${job.experience}\nSkills: ${job.skills}\nDescription: ${job.description}\nResumes: ${pdfContents.map(r => `Name: ${r.filename}, FileID: ${r.fileId}, PDF (base64): ${r.base64.slice(0, 100)}...`).join('\n')}\n\nReply ONLY with a JSON array of objects, each object must have at least 'fileId', 'name', and 'rank'. Do not include any explanation or extra text.`;
+  const prompt = `You are a resume evaluator. Given the job details and a list of resumes (PDFs in base64), rank the resumes based on their suitability for the job.Also typos and punctuation errors, if any found rank the resume with less ranking.\nJob Details:\nPosition: ${job.position}\nDepartment: ${job.department}\nExperience: ${job.experience}\nSkills: ${job.skills}\nDescription: ${job.description}\nResumes: ${pdfContents.map(r => `Name: ${r.filename}, FileID: ${r.fileId}, PDF (base64): ${r.base64.slice(0, 100)}...`).join('\n')}\n\nReply ONLY with a JSON array of objects, each object must have at least 'fileId', 'name', and 'rank'. Do not include any explanation or extra text.`;
 
   // Call OpenAI
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });

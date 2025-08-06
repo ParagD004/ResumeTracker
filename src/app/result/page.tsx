@@ -26,10 +26,18 @@ export default function ResultPage() {
     }
   }, []);
 
+  // Sort by rank before rendering
+  const sortedRanking = [...ranking].sort((a, b) => {
+    if (a.rank === undefined && b.rank === undefined) return 0;
+    if (a.rank === undefined) return 1;
+    if (b.rank === undefined) return -1;
+    return a.rank - b.rank;
+  });
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Resume Analysis Results</h1>
-      {ranking.length === 0 ? (
+      {sortedRanking.length === 0 ? (
         <div className="mb-6">No ranking data found.</div>
       ) : (
         <table className="w-full border mb-6">
@@ -41,18 +49,18 @@ export default function ResultPage() {
             </tr>
           </thead>
           <tbody>
-            {ranking.map((resume, idx) => (
+            {sortedRanking.map((resume, idx) => (
               <tr key={resume.fileId} className="border-t">
                 <td className="p-2">{resume.rank ?? idx + 1}</td>
                 <td className="p-2">{resume.name || "Unknown"}</td>
                 <td className="p-2">
                   <a
-                    href={`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID}/files/${resume.fileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
+                    href={`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID}/files/${resume.fileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"
                   >
-                    Download
+                    View
                   </a>
                 </td>
               </tr>

@@ -213,32 +213,47 @@ export default function SubmitResumePage() {
         </button>
 
         {resumes.length > 0 && uploadComplete && (
-          <button
-            onClick={async () => {
-              if (!jobId) return;
-              try {
-                // Call analyze-resumes API
-                const response = await fetch('/api/analyze-resumes', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ jobId })
-                });
-                const result = await response.json();
-                if (!result.success) {
-                  alert(result.error || 'Analysis failed');
-                  return;
+          <>
+            <button
+              onClick={async () => {
+                if (!jobId) return;
+                setIsSubmitting(true);
+                try {
+                  // Call analyze-resumes API
+                  const response = await fetch('/api/analyze-resumes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobId })
+                  });
+                  const result = await response.json();
+                  if (!result.success) {
+                    alert(result.error || 'Analysis failed');
+                    setIsSubmitting(false);
+                    return;
+                  }
+                  // Store result in sessionStorage and redirect
+                  sessionStorage.setItem('resumeRanking', JSON.stringify(result.data));
+                  router.push(`/result?jobId=${jobId}`);
+                } catch (error) {
+                  alert('Failed to analyze resumes');
+                  setIsSubmitting(false);
                 }
-                // Store result in sessionStorage and redirect
-                sessionStorage.setItem('resumeRanking', JSON.stringify(result.data));
-                router.push(`/result?jobId=${jobId}`);
-              } catch (error) {
-                alert('Failed to analyze resumes');
-              }
-            }}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ml-auto"
-          >
-            Analyze Resumes
-          </button>
+              }}
+              disabled={isSubmitting}
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ml-auto disabled:bg-green-300 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Analyzing...' : 'Analyze Resumes'}
+            </button>
+            {isSubmitting && (
+              <div className="flex items-center ml-4">
+                <svg className="animate-spin h-5 w-5 text-green-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                <span className="text-green-600">Analyzing resumes...</span>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
