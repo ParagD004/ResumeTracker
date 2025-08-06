@@ -12,35 +12,39 @@ import Link from "next/link";
 
 export const Navigation = () => {
     return (
-      <nav className="bg-[var(--background)] border-b border-[var(--foreground)]/10">
+      <nav className="fixed top-0 left-0 w-full bg-transparent backdrop-blur-lg border-b border-[var(--foreground)]/10 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex-shrink-0">
-              <h1 className="text-xl font-semibold text-[var(--foreground)]">
-                ResumeTracker
-              </h1>
+          <div className="flex justify-between h-14 items-center"> {/* Reduced height for smaller navbar */}
+            <div className="flex-shrink-0" style={{ width: '120px', height: '30px' }}>
+              <img
+                src="/favicon.png"
+                alt="ResumeTracker Logo"
+                className="object-contain rounded-lg shadow-md"
+                style={{ width: '120px', height: '27px', display: 'block', background: '#111' }}
+                onError={e => { e.currentTarget.style.display = 'none'; }}
+              />
             </div>
             <div className="flex items-center gap-4">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
+              <button className="px-4 py-2 bg-[#347188] text-white rounded-xl hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
                 <Link href="/about">About Us</Link>
               </button>
               <SignedOut>
                 <SignInButton>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
+                  <button className="px-4 py-2 bg-[#347188] text-white rounded-xl hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
                     Sign In
                   </button>
                 </SignInButton>
                 <SignUpButton>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
+                  <button className="px-4 py-2 bg-[#347188] text-white rounded-xl hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
                     Sign Up
                   </button>
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
-                <Link href="/user-profile">Profile</Link>
+                <button className="px-4 py-2 bg-[#347188] text-white rounded-xl hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/30 flex items-center gap-2">
+                  <Link href="/user-profile">Profile</Link>
                 </button>
-                <div className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-red-500/30 flex items-center gap-2">
+                <div className="px-4 py-2 bg-red-400 text-white rounded-xl hover:bg-red-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-red-500/30 flex items-center gap-2">
                   <SignOutButton />
                 </div>
                 {/* <UserButton /> */}

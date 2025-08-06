@@ -47,7 +47,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span className="text-gray-300">Instagram</span>
+                <span className="text-gray-300 hover:text-white transition-colors">Instagram</span>
               </a>
             </div>
 
@@ -66,7 +66,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span className="text-gray-300">LinkedIn</span>
+                <span className="text-gray-300 hover:text-white transition-colors">LinkedIn</span>
               </a>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function Footer() {
       {/* Copyright Section */}
       <div className="max-w-7xl mx-auto mt-1 pt-3 border-t border-gray-700">
         <p className="text-center text-gray-400 text-sm">
-          © {new Date().getFullYear()} Resume Tracker. All rights reserved.
+          © {new Date().getFullYear()} ResumeTracker. All rights reserved.
         </p>
       </div>
     </footer>

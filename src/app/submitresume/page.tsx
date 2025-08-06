@@ -48,11 +48,29 @@ export default function SubmitResumePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setResumes((prev) => [...prev, ...filesArray]);
-      setUploadProgress((prev) => [
-        ...prev,
-        ...Array(filesArray.length).fill(0),
-      ]);
+      // Merge new files with existing, filter out duplicates by name and size
+      setResumes((prev) => {
+        const allFiles = [...prev, ...filesArray];
+        const uniqueFiles = allFiles.filter((file, idx, arr) =>
+          arr.findIndex(f => f.name === file.name && f.size === file.size) === idx
+        );
+        return uniqueFiles;
+      });
+      setUploadProgress((prev) => {
+        // If new files are added, add progress for only the truly new files
+        const allFiles = [...resumes, ...filesArray];
+        const uniqueFiles = allFiles.filter((file, idx, arr) =>
+          arr.findIndex(f => f.name === file.name && f.size === file.size) === idx
+        );
+        // Progress array should match uniqueFiles length
+        // Fill with 0 for new files
+        const newLength = uniqueFiles.length;
+        const prevLength = prev.length;
+        if (newLength > prevLength) {
+          return [...prev, ...Array(newLength - prevLength).fill(0)];
+        }
+        return prev.slice(0, newLength);
+      });
     }
   };
 
@@ -128,9 +146,9 @@ export default function SubmitResumePage() {
 
   if (!job) {
     return (
-      <div className="p-6">
-        <p>Job posting not found. Please try again.</p>
-        <Link href="/dataEnter" className="text-blue-500">
+      <div className="p-6 bg-[#05041c] rounded-xl shadow-2xl shadow-[#347188]/20 border border-[#347188]/30 mt-20">
+        <p className="text-gray-100">Job posting not found. Please try again.</p>
+        <Link href="/dataEnter" className="text-blue-400 hover:text-blue-300 underline">
           Back to home
         </Link>
       </div>
@@ -138,14 +156,14 @@ export default function SubmitResumePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">
-        Submit Resumes for: {job.position}
+    <div className="max-w-4xl mx-auto p-4 sm:p-8 mt-10 sm:mt-20 bg-[#05041c] rounded-xl shadow-2xl shadow-[#347188]/20 border border-[#347188]/30 w-full">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-200 drop-shadow-lg text-center sm:text-left">
+        Submit Resumes for: <span className="text-blue-400">{job.position}</span>
       </h1>
-      <p className="mb-6">Openings: {job.openings}</p>
+      <p className="mb-6 text-blue-300 text-center sm:text-left">Openings: {job.openings}</p>
 
       <div className="mb-8">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-base sm:text-lg font-semibold text-blue-300 mb-2">
           Upload Resumes (PDF only)
         </label>
         <input
@@ -153,30 +171,25 @@ export default function SubmitResumePage() {
           accept=".pdf"
           multiple
           onChange={handleFileChange}
-          className="block w-full text-sm text-gray-500
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-md file:border-0
-            file:text-sm file:font-semibold
-            file:bg-blue-50 file:text-blue-700
-            hover:file:bg-blue-100"
+          className="block w-full text-xs sm:text-sm text-gray-100 bg-slate-800 border border-slate-600 rounded-lg p-2 sm:p-3 focus:ring-2 focus:ring-[#347188] focus:border-[#347188] transition-all duration-300 file:mr-2 sm:file:mr-4 file:py-2 file:px-2 sm:file:px-4 file:rounded-md file:border-0 file:text-xs sm:file:text-sm file:font-semibold file:bg-[#347188] file:text-white hover:file:bg-green-700"
         />
       </div>
 
       {resumes.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-lg font-medium mb-3">Selected Resumes</h2>
+          <h2 className="text-base sm:text-lg font-semibold mb-3 text-blue-200">Selected Resumes</h2>
           <ul className="space-y-3">
             {resumes.map((file, index) => (
               <li
                 key={index}
-                className="flex items-center justify-between p-3 border rounded"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-2 sm:p-3 border border-blue-700 rounded-lg bg-slate-900"
               >
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{file.name}</p>
+                <div className="flex-1 w-full">
+                  <p className="text-xs sm:text-sm font-medium text-gray-100 break-all">{file.name}</p>
                   {uploadProgress[index] > 0 && uploadProgress[index] < 100 && (
-                    <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                    <div className="w-full bg-blue-900 rounded-full h-2 mt-1">
                       <div
-                        className="bg-blue-600 h-2.5 rounded-full"
+                        className="bg-blue-400 h-2 rounded-full"
                         style={{ width: `${uploadProgress[index]}%` }}
                       ></div>
                     </div>
@@ -184,7 +197,7 @@ export default function SubmitResumePage() {
                 </div>
                 <button
                   onClick={() => handleRemoveFile(index)}
-                  className="text-red-500 hover:text-red-700 ml-4"
+                  className="text-red-400 hover:text-red-600 mt-2 sm:mt-0 sm:ml-4 font-semibold"
                 >
                   Remove
                 </button>
@@ -194,20 +207,21 @@ export default function SubmitResumePage() {
         </div>
       )}
 
-      <div className="flex space-x-4">
+      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
         {!uploadComplete && (
           <button
             onClick={handleSubmit}
             disabled={resumes.length === 0 || isSubmitting}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-[#347188] text-white font-bold rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg shadow-[#347188]/20 hover:shadow-xl hover:shadow-[#347188]/40 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            {isSubmitting ? "Uploading..." : "Upload Resumes"}
+            <span className="relative z-10">{isSubmitting ? "Uploading..." : "Upload Resumes"}</span>
+            {!isSubmitting && <span className="transform group-hover:translate-x-1 transition-transform">→</span>}
           </button>
         )}
 
         <button
           onClick={() => router.push("/dataEnter")}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+          className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-slate-800 text-blue-200 font-bold rounded-lg hover:bg-red-600 transition-all duration-300 shadow-lg shadow-blue-900/20 hover:shadow-xl hover:shadow-blue-900/40"
         >
           Cancel
         </button>
@@ -240,12 +254,12 @@ export default function SubmitResumePage() {
                 }
               }}
               disabled={isSubmitting}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ml-auto disabled:bg-green-300 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all duration-300 shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/40 sm:ml-auto disabled:bg-green-300 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Analyzing...' : 'Analyze Resumes'}
             </button>
             {isSubmitting && (
-              <div className="flex items-center ml-4">
+              <div className="flex items-center ml-0 sm:ml-4 mt-2 sm:mt-0">
                 <svg className="animate-spin h-5 w-5 text-green-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
