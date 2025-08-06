@@ -8,9 +8,14 @@ import {
     SignedOut,
   } from "@clerk/nextjs";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 
 export const Navigation = () => {
+  const pathname = usePathname();
+  if(pathname !== '/') {
+    return null;
+  }
     return (
       <nav className="fixed top-0 left-0 w-full bg-transparent backdrop-blur-lg border-b border-[var(--foreground)]/10 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
