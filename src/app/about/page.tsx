@@ -4,98 +4,109 @@ import Footer from '@/components/Footer/page';
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#05041c] w-full">
       <Head>
         <title>About Resume Tracker - AI-Powered Resume Screening</title>
         <meta name="description" content="Learn how Resume Tracker uses AI to streamline your recruitment process by analyzing and shortlisting the best resumes for your job openings." />
       </Head>
 
-      <main className="container mx-auto px-4 py-12">
-        <section className="max-w-4xl mx-auto text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">About Resume Tracker</h1>
-          <p className="text-xl text-gray-600 mb-8">
-            Revolutionizing recruitment with AI-powered resume analysis and shortlisting.
+      {/* Home link at the top, themed and responsive */}
+      <div className="w-full flex flex-wrap justify-start px-2 xs:px-4 pt-4 mb-2 sm:mb-4">
+        <Link
+          href="/"
+          className="px-4 py-2 bg-[#0a092b] border border-[#347188]/30 rounded-lg text-blue-400 font-bold shadow-md hover:bg-[#347188] hover:text-white transition-all duration-300 text-xs xs:text-sm sm:text-base"
+          style={{ minWidth: '70px', textAlign: 'center' }}
+        >
+          <span className="mr-2">←</span>Home
+        </Link>
+      </div>
+
+      <main className="w-full max-w-4xl mx-auto px-2 xs:px-4 sm:px-8 py-4 sm:py-10">
+        <section className="w-full text-center mb-8 sm:mb-16 bg-[#05041c] rounded-xl shadow-2xl shadow-[#347188]/20 border border-[#347188]/30 p-2 xs:p-3 sm:p-10">
+          <h1 className="text-lg xs:text-xl sm:text-2xl md:text-4xl font-bold text-blue-200 mb-2 xs:mb-3 sm:mb-6 drop-shadow-lg">About Resume Tracker</h1>
+          <p className="text-xs xs:text-sm sm:text-lg md:text-xl text-blue-300 mb-4 xs:mb-5 sm:mb-8">
+            Resume Tracker uses AI to help recruiters quickly find the best candidates for any job opening. Upload resumes, set your criteria, and let our platform do the heavy lifting.
           </p>
-          <div className="flex justify-center">
-            <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300">
-              Try It Now
+          <div className="flex flex-col xs:flex-row justify-center gap-3 xs:gap-6">
+            <Link href="/dashboard" className="w-full xs:w-auto px-4 xs:px-6 sm:px-8 py-2 xs:py-3 bg-[#347188] text-white font-bold rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg shadow-[#347188]/20 hover:shadow-xl hover:shadow-[#347188]/40 flex items-center justify-center gap-2 text-xs xs:text-sm sm:text-base">
+              <span className="relative z-10">Try It Now</span>
+              <span className="transform group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>
         </section>
 
-        <section className="max-w-4xl mx-auto mb-16">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-8">How Resume Tracker Works</h2>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-blue-600 text-2xl mb-4 font-bold">1</div>
-              <h3 className="text-xl font-medium text-gray-800 mb-3">Input Job Requirements</h3>
-              <p className="text-gray-600">
-                Recruiters provide key job details including position, department, location, experience level, required skills, job description, and salary range.
+        <section className="w-full mb-8 sm:mb-16">
+          <h2 className="text-base xs:text-lg sm:text-2xl md:text-3xl font-semibold text-blue-200 mb-4 xs:mb-5 sm:mb-8">How Resume Tracker Works</h2>
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 xs:gap-4 sm:gap-8">
+            <div className="bg-[#0a092b] p-2 xs:p-4 sm:p-6 rounded-lg shadow-md border border-[#347188]/30">
+              <div className="text-blue-400 text-base xs:text-lg sm:text-2xl mb-1 xs:mb-2 sm:mb-4 font-bold">1</div>
+              <h3 className="text-xs xs:text-sm sm:text-lg md:text-xl font-medium text-blue-200 mb-1 xs:mb-2 sm:mb-3">Input Job Requirements</h3>
+              <p className="text-blue-300 text-xs xs:text-sm sm:text-base md:text-base">
+                Enter job details like position, department, experience, skills, and description. Our platform tailors the analysis to your needs.
               </p>
             </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-blue-600 text-2xl mb-4 font-bold">2</div>
-              <h3 className="text-xl font-medium text-gray-800 mb-3">Upload Multiple Resumes</h3>
-              <p className="text-gray-600">
-                Upload resumes in various formats (PDF, DOCX, etc.) from multiple candidates to be analyzed against your job requirements.
+            <div className="bg-[#0a092b] p-2 xs:p-4 sm:p-6 rounded-lg shadow-md border border-[#347188]/30">
+              <div className="text-blue-400 text-base xs:text-lg sm:text-2xl mb-1 xs:mb-2 sm:mb-4 font-bold">2</div>
+              <h3 className="text-xs xs:text-sm sm:text-lg md:text-xl font-medium text-blue-200 mb-1 xs:mb-2 sm:mb-3">Upload Resumes</h3>
+              <p className="text-blue-300 text-xs xs:text-sm sm:text-base md:text-base">
+                Upload multiple resumes (PDF only) for instant AI-powered analysis and ranking.
               </p>
             </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-blue-600 text-2xl mb-4 font-bold">3</div>
-              <h3 className="text-xl font-medium text-gray-800 mb-3">AI-Powered Analysis</h3>
-              <p className="text-gray-600">
-                Our advanced OpenAI integration analyzes each resume against your criteria, scoring candidates based on relevance and fit.
+            <div className="bg-[#0a092b] p-2 xs:p-4 sm:p-6 rounded-lg shadow-md border border-[#347188]/30">
+              <div className="text-blue-400 text-base xs:text-lg sm:text-2xl mb-1 xs:mb-2 sm:mb-4 font-bold">3</div>
+              <h3 className="text-xs xs:text-sm sm:text-lg md:text-xl font-medium text-blue-200 mb-1 xs:mb-2 sm:mb-3">AI-Powered Analysis</h3>
+              <p className="text-blue-300 text-xs xs:text-sm sm:text-base md:text-base">
+                Our OpenAI integration scores each resume based on your criteria, highlighting the most relevant candidates.
               </p>
             </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-blue-600 text-2xl mb-4 font-bold">4</div>
-              <h3 className="text-xl font-medium text-gray-800 mb-3">Get Shortlisted Candidates</h3>
-              <p className="text-gray-600">
-                Receive a ranked list of the best candidates with their names and the option to download their resumes for further review.
+            <div className="bg-[#0a092b] p-2 xs:p-4 sm:p-6 rounded-lg shadow-md border border-[#347188]/30">
+              <div className="text-blue-400 text-base xs:text-lg sm:text-2xl mb-1 xs:mb-2 sm:mb-4 font-bold">4</div>
+              <h3 className="text-xs xs:text-sm sm:text-lg md:text-xl font-medium text-blue-200 mb-1 xs:mb-2 sm:mb-3">Get Shortlisted Candidates</h3>
+              <p className="text-blue-300 text-xs xs:text-sm sm:text-base md:text-base">
+                Instantly receive a ranked list of top candidates and download their resumes for review.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="max-w-4xl mx-auto mb-16">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-6">Why Choose Resume Tracker?</h2>
-          
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-medium text-gray-800 mb-3">Save Time & Resources</h3>
-              <p className="text-gray-600">
-                Automate the initial screening process, reducing hours of manual resume review to minutes. Focus your time on interviewing only the most qualified candidates.
+        <section className="w-full mb-8 sm:mb-16">
+          <h2 className="text-base xs:text-lg sm:text-2xl md:text-3xl font-semibold text-blue-200 mb-2 xs:mb-3 sm:mb-6">Why Choose Resume Tracker?</h2>
+          <div className="space-y-2 xs:space-y-4 sm:space-y-8">
+            <div className="bg-[#0a092b] p-2 xs:p-4 sm:p-6 rounded-lg shadow-md border border-[#347188]/30">
+              <h3 className="text-xs xs:text-sm sm:text-lg md:text-xl font-medium text-blue-200 mb-1 xs:mb-2 sm:mb-3">Save Time & Resources</h3>
+              <p className="text-blue-300 text-xs xs:text-sm sm:text-base md:text-base">
+                Automate resume screening and focus on interviewing only the most qualified candidates.
               </p>
             </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-medium text-gray-800 mb-3">Objective Candidate Evaluation</h3>
-              <p className="text-gray-600">
-                Our AI evaluates candidates based solely on your specified criteria, eliminating unconscious bias in the initial screening phase.
+            <div className="bg-[#0a092b] p-2 xs:p-4 sm:p-6 rounded-lg shadow-md border border-[#347188]/30">
+              <h3 className="text-xs xs:text-sm sm:text-lg md:text-xl font-medium text-blue-200 mb-1 xs:mb-2 sm:mb-3">Objective Candidate Evaluation</h3>
+              <p className="text-blue-300 text-xs xs:text-sm sm:text-base md:text-base">
+                Our AI evaluates candidates based on your criteria, reducing bias and improving fairness.
               </p>
             </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-medium text-gray-800 mb-3">Comprehensive Analysis</h3>
-              <p className="text-gray-600">
-                We analyze not just keywords but context, experience relevance, skill matching, and overall fit for your specific position requirements.
+            <div className="bg-[#0a092b] p-2 xs:p-4 sm:p-6 rounded-lg shadow-md border border-[#347188]/30">
+              <h3 className="text-xs xs:text-sm sm:text-lg md:text-xl font-medium text-blue-200 mb-1 xs:mb-2 sm:mb-3">Comprehensive Analysis</h3>
+              <p className="text-blue-300 text-xs xs:text-sm sm:text-base md:text-base">
+                We analyze context, experience, skills, and overall fit—not just keywords.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-6">Ready to Transform Your Hiring Process?</h2>
-          <p className="text-xl text-gray-600 mb-8">
+        <section className="w-full text-center bg-[#05041c] rounded-xl shadow-2xl shadow-[#347188]/20 border border-[#347188]/30 p-2 xs:p-4 sm:p-10">
+          <h2 className="text-base xs:text-lg sm:text-2xl md:text-3xl font-semibold text-blue-200 mb-2 xs:mb-3 sm:mb-6">Ready to Transform Your Hiring Process?</h2>
+          <p className="text-xs xs:text-sm sm:text-lg md:text-xl text-blue-300 mb-4 xs:mb-5 sm:mb-8">
             Join hundreds of recruiters who save time and find better candidates with Resume Tracker.
           </p>
-          <Link href="/dashboard" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-lg transition duration-300">
-            Get Started Now
-          </Link>
+          <div className="flex flex-col xs:flex-row justify-center gap-3 xs:gap-6">
+            <Link href="/" className="w-full xs:w-auto px-4 xs:px-6 sm:px-8 py-2 xs:py-3 bg-[#0a092b] text-blue-400 font-bold rounded-lg hover:bg-[#347188] hover:text-white transition-all duration-300 shadow-md text-xs xs:text-sm sm:text-base">
+              <span className="mr-2">←</span>Home
+            </Link>
+            <Link href="/dashboard" className="w-full xs:w-auto px-4 xs:px-6 sm:px-8 py-2 xs:py-3 bg-[#347188] text-white font-bold rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg shadow-[#347188]/20 hover:shadow-xl hover:shadow-[#347188]/40 flex items-center justify-center gap-2 text-xs xs:text-sm sm:text-base">
+              <span className="relative z-10">Get Started Now</span>
+              <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+          </div>
         </section>
       </main>
       <Footer />
