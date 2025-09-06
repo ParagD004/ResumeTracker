@@ -27,12 +27,12 @@ export default function ResultPage() {
     }
   }, []);
 
-  // Sort by rank before rendering
+  // Sort by score descending before rendering
   const sortedRanking = [...ranking].sort((a, b) => {
-    if (a.rank === undefined && b.rank === undefined) return 0;
-    if (a.rank === undefined) return 1;
-    if (b.rank === undefined) return -1;
-    return a.rank - b.rank;
+    if (typeof a.score !== "number" && typeof b.score !== "number") return 0;
+    if (typeof a.score !== "number") return 1;
+    if (typeof b.score !== "number") return -1;
+    return b.score - a.score;
   });
 
   return (
@@ -61,10 +61,10 @@ export default function ResultPage() {
             <tbody>
               {sortedRanking.map((resume, idx) => (
                 <tr key={resume.fileId} className="border-t border-[#347188]/20 bg-slate-900 hover:bg-[#1a2253] transition-colors">
-                  <td className="p-3 text-blue-300 font-semibold text-lg">{resume.rank ?? idx + 1}</td>
+                  <td className="p-3 text-blue-300 font-semibold text-lg">{idx + 1}</td>
                   <td className="p-3 text-gray-100 font-medium">{resume.name || "Unknown"}</td>
                   <td className="p-3 text-green-400 font-bold text-lg">{typeof resume.score === "number" ? `${resume.score}/100` : "-"}</td>
-                  <td className="p-3">
+                  <td className="p-3 flex gap-2">
                     <a
                       href={`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID}/files/${resume.fileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
                       target="_blank"
@@ -72,6 +72,13 @@ export default function ResultPage() {
                       className="px-4 py-2 bg-[#347188] text-white rounded-lg hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-green-500/30 font-semibold"
                     >
                       View PDF
+                    </a>
+                    <a
+                      href={`https://cloud.appwrite.io/v1/storage/buckets/${process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID}/files/${resume.fileId}/download?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID}`}
+                      download
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800 transition-all duration-300 shadow-md hover:shadow-green-500/30 font-semibold"
+                    >
+                      Download PDF
                     </a>
                   </td>
                 </tr>

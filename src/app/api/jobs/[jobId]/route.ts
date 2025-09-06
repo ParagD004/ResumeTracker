@@ -4,18 +4,19 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  { params }: { params: { jobId: string } }
+  { params }: { params: Promise<{ jobId: string }> }
 ) {
   try {
     if (!process.env.MONGODB_URI) {
       throw new Error('MONGODB_URI environment variable is not set');
     }
 
+    const { jobId } = await params;
     const client = await MongoClient.connect(process.env.MONGODB_URI);
     const db = client.db();
     
     // Convert string ID to MongoDB ObjectId
-    const objectId = new ObjectId(params.jobId);
+    const objectId = new ObjectId(jobId);
     
     const job = await db.collection('JobPostings').findOne({ _id: objectId });
 

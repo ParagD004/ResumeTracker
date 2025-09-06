@@ -4,12 +4,13 @@ import JobPosting from '@/models/JobPosting';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
     
-    const job = await JobPosting.findById(params.id).lean();
+    const { id } = await params;
+    const job = await JobPosting.findById(id).lean();
     if (!job) {
       return NextResponse.json(
         { success: false, error: 'Job posting not found' },

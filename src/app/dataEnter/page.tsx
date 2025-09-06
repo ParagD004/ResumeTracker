@@ -27,6 +27,7 @@ export default function DataEnterPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('Data:',JSON.stringify(formData))
     e.preventDefault();
     setErrorMsg("");
     // Validate required fields
@@ -53,7 +54,8 @@ export default function DataEnterPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit job posting');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
       }
 
       const result = await response.json();
@@ -62,6 +64,7 @@ export default function DataEnterPage() {
       router.push(`/submitresume?jobId=${jobId}`);
     } catch (error) {
       console.error('Error submitting job posting:', error);
+      setErrorMsg(`Failed to submit job posting: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }
