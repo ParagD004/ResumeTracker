@@ -153,8 +153,8 @@ The application is deployed on Vercel and accessible at:
 **Parag Dharmik**
 - Email: paragdharmik004@gmail.com
 - Phone: +91-9699807424
-- LinkedIn: [Your LinkedIn Profile]
-- GitHub: [Your GitHub Profile]
+- LinkedIn: [parag-dharmik-445ab9257](https://www.linkedin.com/in/parag-dharmik-445ab9257)
+- GitHub: [@ParagD004](https://github.com/ParagD004)
 
 ## 📄 License
 
