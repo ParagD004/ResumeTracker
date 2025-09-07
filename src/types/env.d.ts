@@ -7,5 +7,7 @@ namespace NodeJS {
     NEXT_PUBLIC_APPWRITE_COLLECTION_ID?: string
     NEXT_PUBLIC_APPWRITE_BUCKET_ID?: string
     APPWRITE_SECRET_KEY: string
+    APPWRITE_API_KEY: string
+    OPENAI_API_KEY: string
   }
 }
