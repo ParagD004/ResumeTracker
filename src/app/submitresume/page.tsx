@@ -35,6 +35,12 @@ function SubmitResumeContent() {
         if (!response.ok) throw new Error("Failed to fetch job posting");
         const data = await response.json();
         setJob(data.data);
+        
+        // Check if resumes already exist for this job
+        if (data.data.resumes && data.data.resumes.length > 0) {
+          console.log('Found existing resumes, setting uploadComplete to true');
+          setUploadComplete(true);
+        }
       } catch (error) {
         console.error("Error fetching job posting:", error);
         router.push("/dataEnter"); // Redirect to a safe page if error occurs
@@ -85,8 +91,11 @@ function SubmitResumeContent() {
     setIsSubmitting(true);
 
     try {
+      console.log('Starting upload process...');
+      
       // Upload files to Appwrite and collect metadata
       const uploadPromises = resumes.map(async (file, index) => {
+        console.log(`Uploading file ${index + 1}: ${file.name}`);
         const uploadedFile = await storage.createFile(
           process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID!,
           ID.unique(),
@@ -100,6 +109,7 @@ function SubmitResumeContent() {
             });
           }
         );
+        console.log(`File ${file.name} uploaded successfully with ID: ${uploadedFile.$id}`);
         return {
           fileId: uploadedFile.$id,
           filename: file.name,
@@ -108,6 +118,7 @@ function SubmitResumeContent() {
       });
 
       const uploadedFilesMeta = await Promise.all(uploadPromises);
+      console.log('All files uploaded to Appwrite successfully');
 
       // Prepare FormData for API
       const formData = new FormData();
@@ -118,21 +129,34 @@ function SubmitResumeContent() {
         formData.append('jobId', jobId);
       }
 
+      console.log('Sending metadata to API...');
       // Send metadata to /api/resumes
       const response = await fetch('/api/resumes', {
         method: 'POST',
         body: formData
       });
 
+      console.log('API response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to store resume metadata');
+        const errorText = await response.text();
+        console.error('API error response:', errorText);
+        throw new Error(`Failed to store resume metadata: ${response.status} - ${errorText}`);
       }
 
-      alert('Resumes uploaded and metadata stored successfully!');
-      setUploadComplete(true);
+      const result = await response.json();
+      console.log('API response:', result);
+
+      if (result.success) {
+        console.log('Upload completed successfully, setting uploadComplete to true');
+        alert('Resumes uploaded and metadata stored successfully!');
+        setUploadComplete(true);
+      } else {
+        throw new Error(result.error || 'Upload failed');
+      }
     } catch (error) {
       console.error('Error uploading resumes:', error);
-      alert('Failed to upload resumes');
+      alert(`Failed to upload resumes: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -224,20 +248,30 @@ function SubmitResumeContent() {
           Cancel
         </button>
 
-        {resumes.length > 0 && uploadComplete && (
-          <>
+        {uploadComplete && (
+          <div className="w-full">
+            <div className="mb-4 p-3 bg-green-900/30 border border-green-600 rounded-lg">
+              <p className="text-green-300 text-sm font-medium">
+                ✅ Resumes uploaded successfully! You can now analyze them.
+              </p>
+            </div>
             <button
               onClick={async () => {
                 if (!jobId) return;
                 setIsSubmitting(true);
                 try {
+                  console.log('Starting resume analysis...');
                   // Call analyze-resumes API
                   const response = await fetch('/api/analyze-resumes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ jobId })
                   });
+                  console.log('Analysis API response status:', response.status);
+                  
                   const result = await response.json();
+                  console.log('Analysis API response:', result);
+                  
                   if (!result.success) {
                     alert(result.error || 'Analysis failed');
                     setIsSubmitting(false);
@@ -247,6 +281,7 @@ function SubmitResumeContent() {
                   sessionStorage.setItem('resumeRanking', JSON.stringify(result.data));
                   router.push(`/result?jobId=${jobId}`);
                 } catch (error) {
+                  console.error('Error analyzing resumes:', error);
                   alert('Failed to analyze resumes');
                   setIsSubmitting(false);
                 }
@@ -257,7 +292,7 @@ function SubmitResumeContent() {
               {isSubmitting ? 'Analyzing...' : 'Analyze Resumes'}
             </button>
             {isSubmitting && (
-              <div className="flex items-center ml-0 sm:ml-4">
+              <div className="flex items-center ml-0 sm:ml-4 mt-2">
                 <svg className="animate-spin h-5 w-5 text-green-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
@@ -265,7 +300,7 @@ function SubmitResumeContent() {
                 <span className="text-green-600 text-xs sm:text-base">Analyzing resumes...</span>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
