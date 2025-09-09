@@ -90,8 +90,23 @@ function SubmitResumeContent() {
     if (resumes.length === 0) return;
     setIsSubmitting(true);
 
+    let uploadedFilesMeta: any[] = [];
+
     try {
       console.log('Starting upload process...');
+      
+      // Test API connectivity first
+      console.log('Testing API connectivity...');
+      try {
+        const healthResponse = await fetch('/api/health', {
+          method: 'GET',
+          signal: AbortSignal.timeout(10000) // 10 second timeout
+        });
+        const healthData = await healthResponse.json();
+        console.log('Health check response:', healthData);
+      } catch (healthError) {
+        console.warn('Health check failed, but continuing with upload:', healthError);
+      }
       
       // Upload files to Appwrite and collect metadata
       const uploadPromises = resumes.map(async (file, index) => {
@@ -117,7 +132,7 @@ function SubmitResumeContent() {
         };
       });
 
-      const uploadedFilesMeta = await Promise.all(uploadPromises);
+      uploadedFilesMeta = await Promise.all(uploadPromises);
       console.log('All files uploaded to Appwrite successfully');
 
       // Prepare FormData for API
@@ -130,13 +145,48 @@ function SubmitResumeContent() {
       }
 
       console.log('Sending metadata to API...');
-      // Send metadata to /api/resumes
-      const response = await fetch('/api/resumes', {
-        method: 'POST',
-        body: formData
-      });
+      
+      // Retry mechanism for production
+      let response;
+      let lastError;
+      const maxRetries = 3;
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          console.log(`API attempt ${attempt}/${maxRetries}`);
+          
+          // Send metadata to /api/resumes
+          response = await fetch('/api/resumes', {
+            method: 'POST',
+            body: formData,
+            // Add timeout and other options for production
+            signal: AbortSignal.timeout(60000), // 60 second timeout
+            headers: {
+              // Don't set Content-Type, let browser set it for FormData
+            }
+          });
 
-      console.log('API response status:', response.status);
+          console.log('API response status:', response.status);
+          console.log('API response headers:', Object.fromEntries(response.headers.entries()));
+          
+          // If we get a response, break out of retry loop
+          break;
+        } catch (error) {
+          lastError = error;
+          console.error(`API attempt ${attempt} failed:`, error);
+          
+          if (attempt === maxRetries) {
+            throw error;
+          }
+          
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+        }
+      }
+
+      if (!response) {
+        throw lastError || new Error('No response received after all retries');
+      }
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -156,6 +206,33 @@ function SubmitResumeContent() {
       }
     } catch (error) {
       console.error('Error uploading resumes:', error);
+      
+      // If API fails, try to store metadata directly in localStorage as fallback
+      if (error instanceof Error && error.message.includes('Failed to fetch')) {
+        console.log('API failed, trying fallback method...');
+        try {
+          // Store resume metadata in localStorage as fallback
+          const fallbackData = {
+            jobId: jobId,
+            resumes: uploadedFilesMeta.map((meta: any) => ({
+              fileId: meta.fileId,
+              filename: meta.filename,
+              uploadedAt: new Date().toISOString()
+            })),
+            uploadedAt: new Date().toISOString()
+          };
+          
+          localStorage.setItem(`resumeUpload_${jobId}`, JSON.stringify(fallbackData));
+          console.log('Fallback data stored in localStorage');
+          
+          alert('Resumes uploaded to storage! Note: Metadata stored locally due to API issues.');
+          setUploadComplete(true);
+          return;
+        } catch (fallbackError) {
+          console.error('Fallback method also failed:', fallbackError);
+        }
+      }
+      
       alert(`Failed to upload resumes: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
